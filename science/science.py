@@ -67,5 +67,5 @@ html = ""
 for id in reversed(chains[longest_chain_index]):
     # print(toot_dict[id]["content"])
     html += toot_dict[id]["content"]
-print(f"Saved thread with {longest_chain} posts!")
 print(html, file=open("index.html","w"))
+print(f"Saved thread with {longest_chain} posts!")
