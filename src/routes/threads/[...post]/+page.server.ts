@@ -36,10 +36,25 @@ async function fetchThread(posturl: string) {
 			})
 	]);
 
-	const descendants: PostMetadata[] = [];
+	const fullContext: PostMetadata[] = [];
+
+	const rootMetadata = {
+		id: root.id,
+		url: root.url,
+		content: purify.sanitize(root.content),
+		author: root.account.id,
+		author_username: root.account.username,
+		author_url: root.account.url,
+		created_at: root.created_at,
+		in_reply_to_account_id: root.in_reply_to_account_id,
+		in_reply_to_id: root.in_reply_to_id
+	};
+
+	fullContext.push(rootMetadata);
+
 	for (const reply of statuses.descendants) {
 		if (reply.account.id === root.account.id && root.account.id === reply.in_reply_to_account_id) {
-			descendants.push({
+			fullContext.push({
 				id: reply.id,
 				url: reply.url,
 				content: purify.sanitize(reply.content),
@@ -55,7 +70,7 @@ async function fetchThread(posturl: string) {
 
 	for (const reply of statuses.ancestors) {
 		if (reply.account.id === root.account.id) {
-			descendants.push({
+			fullContext.push({
 				id: reply.id,
 				url: reply.url,
 				content: purify.sanitize(reply.content),
@@ -70,39 +85,26 @@ async function fetchThread(posturl: string) {
 	}
 
 	const tootDict: { [key: string]: PostMetadata } = {};
-	tootDict[root.id] = {
-		id: root.id,
-		url: root.url,
-		content: purify.sanitize(root.content),
-		author: root.account.id,
-		author_username: root.account.username,
-		author_url: root.account.url,
-		created_at: root.created_at,
-		in_reply_to_account_id: root.in_reply_to_account_id,
-		in_reply_to_id: root.in_reply_to_id
-	};
+	tootDict[root.id] = rootMetadata;
 
-	for (const toot of descendants) {
+	for (const toot of fullContext) {
 		tootDict[toot.id] = toot;
 	}
 
 	let longestChain = -1;
 	let longestChainIndex = -1;
 	const chains = [];
-
-	for (let i = 0; i < descendants.length; i++) {
+	for (let i = 0; i < Object.keys(tootDict).length; i++) {
 		const newChain = [];
-		let cursor = tootDict[descendants[i].id];
+		let cursor = tootDict[fullContext[i].id];
 		while (true) {
 			newChain.push(cursor.id);
-
 			if (!cursor.in_reply_to_id) {
 				break;
 			}
 
 			cursor = tootDict[cursor.in_reply_to_id];
 		}
-
 		chains.push(newChain);
 
 		if (newChain.length > longestChain) {
