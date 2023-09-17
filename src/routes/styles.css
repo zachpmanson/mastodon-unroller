@@ -23,7 +23,11 @@
 	margin: 0;
 }
 
-body,
+body {
+	height: 100%;
+	padding: 1rem;
+}
+
 main {
 	height: 100%;
 }

@@ -4,13 +4,17 @@
 	let username = `@${data.thread[0].author_username}@${instance}`;
 </script>
 
-<div class="max-w-xl m-auto">
+<svelte:head>
+	<title>Thread by {username}</title>
+</svelte:head>
+
+<div class="max-w-xl m-auto mb-8">
 	<div class="my-2">
 		<a href={data.thread[0].author_url}>{username}</a>
 		at {new Date(data.thread[0].created_at).toLocaleString()}
 	</div>
 	{#each data.thread as post, index}
-		<div class="relative hover:bg-slate-100 hover:duration-75 px-2">
+		<div class="px-2 py-1 rounded-lg relative hover:bg-gray-100 duration-100">
 			{@html post.content}
 			<a href={post.url} class="absolute top-0 right-0"
 				><svg
@@ -19,7 +23,7 @@
 					viewBox="0 0 24 24"
 					stroke-width="1.5"
 					stroke="grey"
-					class="w-6 h-6"
+					class="w-6 h-6 opacity-30 hover:opacity-100 duration-100"
 				>
 					<path
 						stroke-linecap="round"

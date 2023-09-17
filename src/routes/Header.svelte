@@ -5,7 +5,7 @@
 </script>
 
 <header>
-	<nav class="flex flex-row w-full justify-between p-2">
+	<nav class="flex flex-row w-full justify-between mb-2">
 		<a href="/"> Mastodon Thread Unroller </a>
 
 		<a href="/about"> About </a>
