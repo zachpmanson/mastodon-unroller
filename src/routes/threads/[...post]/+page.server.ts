@@ -4,7 +4,7 @@ import type { PostMetadata } from "./types";
 import DOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
 
-export const prerender = true;
+export const prerender = "auto";
 
 export async function load({ params }: { params: { post: string } }) {
 	const thread = await fetchThread(params.post);
