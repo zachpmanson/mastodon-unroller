@@ -8,4 +8,5 @@ export type PostMetadata = {
 	author_username: string;
 	author_url: string;
 	created_at: string;
+	media_attachments: any[];
 };

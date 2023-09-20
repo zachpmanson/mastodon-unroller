@@ -10,11 +10,10 @@ export async function load({ params, setHeaders }) {
 	const thread = await fetchThread(params.post);
 	if (thread) {
 		setHeaders({
-			'cache-control': 'max-age=0, s-maxage=86400'
+			"cache-control": "max-age=0, s-maxage=86400"
 		});
 		return { thread: thread };
 	}
-
 
 	throw error(404, "Not found");
 }
@@ -51,7 +50,8 @@ async function fetchThread(posturl: string) {
 		author_url: root.account.url,
 		created_at: root.created_at,
 		in_reply_to_account_id: root.in_reply_to_account_id,
-		in_reply_to_id: root.in_reply_to_id
+		in_reply_to_id: root.in_reply_to_id,
+		media_attachments: root.media_attachments
 	};
 
 	fullContext.push(rootMetadata);
@@ -67,7 +67,8 @@ async function fetchThread(posturl: string) {
 				in_reply_to_account_id: reply.in_reply_to_account_id,
 				author_username: reply.account.username,
 				author_url: reply.account.url,
-				created_at: reply.created_at
+				created_at: reply.created_at,
+				media_attachments: reply.media_attachments
 			});
 		}
 	}
@@ -83,7 +84,8 @@ async function fetchThread(posturl: string) {
 				in_reply_to_account_id: reply.in_reply_to_account_id,
 				author_username: reply.account.username,
 				author_url: reply.account.url,
-				created_at: reply.created_at
+				created_at: reply.created_at,
+				media_attachments: reply.media_attachments
 			});
 		}
 	}
@@ -121,5 +123,6 @@ async function fetchThread(posturl: string) {
 	for (const id of chains[longestChainIndex].reverse()) {
 		tootChain.push(tootDict[id]);
 	}
+
 	return tootChain;
 }
