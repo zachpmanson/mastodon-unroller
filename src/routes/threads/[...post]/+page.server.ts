@@ -6,11 +6,15 @@ import { JSDOM } from "jsdom";
 
 export const prerender = "auto";
 
-export async function load({ params }: { params: { post: string } }) {
+export async function load({ params, setHeaders }) {
 	const thread = await fetchThread(params.post);
 	if (thread) {
+		setHeaders({
+			'cache-control': 'max-age=0, s-maxage=86400'
+		});
 		return { thread: thread };
 	}
+
 
 	throw error(404, "Not found");
 }
