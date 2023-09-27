@@ -7,8 +7,7 @@
 <header>
 	<nav class="flex flex-row w-full justify-between mb-2">
 		<a href="/"> Mastodon Thread Unroller </a>
-
-		<a href="/about"> About </a>
+		<a href="https://notes.zachmanson.com/mastodon-thread-unroller/">About</a>
 	</nav>
 </header>
 
