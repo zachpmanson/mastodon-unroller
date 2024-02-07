@@ -1,13 +1,13 @@
-import { error } from "@sveltejs/kit";
-import { URL } from "url";
-import type { PostMetadata } from "./types";
+import { error, type Load } from "@sveltejs/kit";
 import DOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
-
+import { URL } from "url";
+import type { PostMetadata } from "../../../lib/types";
+import fs from "fs";
 export const prerender = "auto";
 
-export async function load({ params, setHeaders }) {
-	const thread = await fetchThread(params.post);
+export const load: Load = async ({ params, setHeaders }) => {
+	const thread = params.post && (await fetchThread(params.post));
 	if (thread) {
 		setHeaders({
 			"cache-control": "max-age=0, s-maxage=86400"
@@ -16,7 +16,7 @@ export async function load({ params, setHeaders }) {
 	}
 
 	throw error(404, "Not found");
-}
+};
 
 async function fetchThread(posturl: string) {
 	const window = new JSDOM("").window;
@@ -38,9 +38,12 @@ async function fetchThread(posturl: string) {
 				throw error(404);
 			})
 	]);
-
+	console.log(root);
+	// write to file
+	fs.writeFileSync("root.json", JSON.stringify(root));
+	console.log(statuses);
+	fs.writeFileSync("statuses.json", JSON.stringify(statuses));
 	const fullContext: PostMetadata[] = [];
-
 	const rootMetadata = {
 		id: root.id,
 		url: root.url,

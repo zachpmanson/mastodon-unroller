@@ -9,4 +9,5 @@ export type PostMetadata = {
 	author_url: string;
 	created_at: string;
 	media_attachments: any[];
+	children: Set<string>;
 };
