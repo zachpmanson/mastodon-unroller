@@ -70,7 +70,7 @@ async function fetchThread(posturl: string) {
 				? tree[reply.in_reply_to_id]
 				: { ...reply, children: new Set() };
 
-		if (reply.id) tree[reply.in_reply_to_id].children.add(reply.id as string);
+		if (reply.id) tree[reply.in_reply_to_id]?.children?.add(reply.id as string);
 	}
 
 	for (let reply of statuses.ancestors) {
@@ -85,7 +85,7 @@ async function fetchThread(posturl: string) {
 			tree[reply.in_reply_to_id] !== undefined
 				? tree[reply.in_reply_to_id]
 				: { ...reply, children: new Set() };
-		if (reply.id) tree[reply.in_reply_to_id].children.add(reply.id as string);
+		if (reply.id) tree[reply.in_reply_to_id]?.children?.add(reply.id as string);
 	}
 	console.log(Object.keys(tree).map((key) => [key, tree[key].children]));
 

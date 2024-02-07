@@ -34,7 +34,7 @@
 				{/each}
 			</div>
 			<div class="border-solid border-l-2">
-				{#each tree[id].children as child}
+				{#each tree[id].children ?? [] as child}
 					<svelte:self {tree} id={child} />
 				{/each}
 			</div>

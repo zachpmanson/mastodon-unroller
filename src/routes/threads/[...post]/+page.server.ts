@@ -3,7 +3,6 @@ import DOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
 import { URL } from "url";
 import type { PostMetadata } from "../../../lib/types";
-import fs from "fs";
 export const prerender = "auto";
 
 export const load: Load = async ({ params, setHeaders }) => {
@@ -38,11 +37,6 @@ async function fetchThread(posturl: string) {
 				throw error(404);
 			})
 	]);
-	console.log(root);
-	// write to file
-	fs.writeFileSync("root.json", JSON.stringify(root));
-	console.log(statuses);
-	fs.writeFileSync("statuses.json", JSON.stringify(statuses));
 	const fullContext: PostMetadata[] = [];
 	const rootMetadata = {
 		id: root.id,
