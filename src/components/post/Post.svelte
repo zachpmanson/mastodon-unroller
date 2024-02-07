@@ -15,7 +15,9 @@
 {#if tree[id]?.content}
 	<div class="ml-2 pl-1 pt-1 relative duration-100">
 		<div class="text-gray-400 text-xs">
-			<span class="text-base hover:underline" on:click={() => (expanded = !expanded)}>[-]</span>
+			<span class="text-base hover:underline" on:click={() => (expanded = !expanded)}
+				>[{expanded ? "-" : "+"}]</span
+			>
 			<a class="text-blue-800 text-base" href={tree[id].author_url}>{username}</a>
 			at {new Date(tree[id].created_at).toLocaleString()}
 			<a class="font-bold text-gray-400" href={tree[id].url}>permalink</a>
