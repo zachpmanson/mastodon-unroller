@@ -56,8 +56,6 @@ async function fetchThread(posturl: string) {
 	};
 
 	for (let reply of statuses.descendants) {
-		if (!reply?.content) continue;
-
 		reply = {
 			...reply,
 			content: purify.sanitize(reply.content),
@@ -65,12 +63,10 @@ async function fetchThread(posturl: string) {
 			author_username: reply.account.username,
 			author_url: reply.account.url
 		};
-		tree[reply.in_reply_to_id] =
-			tree[reply.in_reply_to_id] !== undefined
-				? tree[reply.in_reply_to_id]
-				: { ...reply, children: new Set() };
-
-		if (reply.id) tree[reply.in_reply_to_id]?.children?.add(reply.id as string);
+		tree[reply.id] = {
+			...reply,
+			children: new Set()
+		};
 	}
 
 	for (let reply of statuses.ancestors) {
@@ -81,13 +77,21 @@ async function fetchThread(posturl: string) {
 			author_username: reply.account.username,
 			author_url: reply.account.url
 		};
-		tree[reply.in_reply_to_id] =
-			tree[reply.in_reply_to_id] !== undefined
-				? tree[reply.in_reply_to_id]
-				: { ...reply, children: new Set() };
-		if (reply.id) tree[reply.in_reply_to_id]?.children?.add(reply.id as string);
+		tree[reply.id] = {
+			...reply,
+			children: new Set()
+		};
 	}
-	console.log(Object.keys(tree).map((key) => [key, tree[key].children]));
 
+	for (let id of Object.keys(tree)) {
+		const post = tree[id];
+		if (post.in_reply_to_id) {
+			if (tree[post.in_reply_to_id]) {
+				tree[post.in_reply_to_id]?.children?.add(id);
+			} else {
+				console.log("No parent for", post.in_reply_to_id);
+			}
+		}
+	}
 	return tree;
 }
