@@ -25,13 +25,19 @@
 		{#if expanded}
 			<div class="pb-2">
 				{@html tree[id].content}
-				{#each tree[id].media_attachments as attachment}
-					{#if attachment.type === "image"}
-						<div class="text-center my-1">
-							<img class="object-contain" src={attachment.url} alt={attachment.description} />
-						</div>
-					{/if}
-				{/each}
+				<div class="flex gap-2">
+					{#each tree[id].media_attachments as attachment}
+						{#if attachment.type === "image"}
+							<div class="text-center my-1">
+								<img
+									class="object-contain max-h-80"
+									src={attachment.url}
+									alt={attachment.description}
+								/>
+							</div>
+						{/if}
+					{/each}
+				</div>
 			</div>
 			<div class="border-solid border-l-2">
 				{#each tree[id].children ?? [] as child}
