@@ -4,14 +4,21 @@
 	let url = "";
 	let loadingUnroll = false;
 	let loadingTree = false;
-	function onSubmitUnroll(e) {
+	function onSubmitUnroll(_e: any) {
+		if (!url.startsWith("http")) {
+			url = `https://${url}`;
+		}
 		if (new URL(url)) {
 			loadingUnroll = true;
-			goto(`/threads/${url}`);
+			goto(`/thread/${url}`);
 		}
 	}
 
-	function onSubmitTree(e) {
+	function onSubmitTree(_e: any) {
+		if (!url.startsWith("http")) {
+			url = `https://${url}`;
+		}
+
 		if (new URL(url)) {
 			loadingTree = true;
 			goto(`/tree/${url}`);

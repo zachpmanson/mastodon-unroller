@@ -33,14 +33,12 @@
 				</svg>
 			</a>
 			{#each post.media_attachments as attachment}
-				{#if attachment.type==="image"}
-				<div class="text-center my-1">
-					<img class="object-contain" src="{attachment.url}" alt="{attachment.description}" />
-				</div>
+				{#if attachment.type === "image"}
+					<div class="text-center my-1">
+						<img class="object-contain" src={attachment.url} alt={attachment.description} />
+					</div>
 				{/if}
 			{/each}
-
 		</div>
 	{/each}
 </div>
-
