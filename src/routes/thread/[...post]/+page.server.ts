@@ -17,13 +17,12 @@ export const load: Load = async ({ params, setHeaders }) => {
 	throw error(404, "Not found");
 };
 
-async function fetchThread(posturl: string) {
+async function fetchThreadPayload(host: string, id: string) {
+	console.log("Fetching", id);
 	const window = new JSDOM("").window;
 	const purify = DOMPurify(window);
 
-	const { host, pathname } = new URL(posturl);
-
-	const apiurl = `https://${host}/api/v1/statuses${pathname.substring(pathname.lastIndexOf("/"))}`;
+	const apiurl = `https://${host}/api/v1/statuses/${id}`;
 
 	const [root, statuses] = await Promise.all([
 		fetch(apiurl)
@@ -37,25 +36,24 @@ async function fetchThread(posturl: string) {
 				throw error(404);
 			})
 	]);
-	const fullContext: PostMetadata[] = [];
-	const rootMetadata = {
-		id: root.id,
-		url: root.url,
-		content: purify.sanitize(root.content),
-		author: root.account.id,
-		author_username: root.account.username,
-		author_url: root.account.url,
-		created_at: root.created_at,
-		in_reply_to_account_id: root.in_reply_to_account_id,
-		in_reply_to_id: root.in_reply_to_id,
-		media_attachments: root.media_attachments
+	const fullContext: Record<string, PostMetadata> = {
+		[root.id]: {
+			id: root.id,
+			url: root.url,
+			content: purify.sanitize(root.content),
+			author: root.account.id,
+			author_username: root.account.username,
+			author_url: root.account.url,
+			created_at: root.created_at,
+			in_reply_to_account_id: root.in_reply_to_account_id,
+			in_reply_to_id: root.in_reply_to_id,
+			media_attachments: root.media_attachments
+		}
 	};
 
-	fullContext.push(rootMetadata);
-
-	for (const reply of statuses.descendants) {
+	for (const reply of [...statuses.descendants, ...statuses.ancestors]) {
 		if (reply.account.id === root.account.id && root.account.id === reply.in_reply_to_account_id) {
-			fullContext.push({
+			fullContext[reply.id] = {
 				id: reply.id,
 				url: reply.url,
 				content: purify.sanitize(reply.content),
@@ -66,60 +64,54 @@ async function fetchThread(posturl: string) {
 				author_url: reply.account.url,
 				created_at: reply.created_at,
 				media_attachments: reply.media_attachments
-			});
+			};
 		}
 	}
+	console.log(Object.keys(fullContext).length);
 
-	for (const reply of statuses.ancestors) {
-		if (reply.account.id === root.account.id) {
-			fullContext.push({
-				id: reply.id,
-				url: reply.url,
-				content: purify.sanitize(reply.content),
-				author: reply.account.id,
-				in_reply_to_id: reply.in_reply_to_id,
-				in_reply_to_account_id: reply.in_reply_to_account_id,
-				author_username: reply.account.username,
-				author_url: reply.account.url,
-				created_at: reply.created_at,
-				media_attachments: reply.media_attachments
-			});
-		}
-	}
+	return fullContext;
+}
 
-	const tootDict: { [key: string]: PostMetadata } = {};
-	tootDict[root.id] = rootMetadata;
+async function fetchThread(posturl: string) {
+	const { host, pathname } = new URL(posturl);
 
-	for (const toot of fullContext) {
-		tootDict[toot.id] = toot;
-	}
+	let fullContext = await fetchThreadPayload(
+		host,
+		pathname.substring(pathname.lastIndexOf("/") + 1)
+	);
 
 	let longestChain = -1;
 	let longestChainIndex = -1;
 	const chains = [];
-	for (let i = 0; i < Object.keys(tootDict).length; i++) {
+	for (let [id, baseToot] of Object.entries(fullContext)) {
 		const newChain = [];
-		let cursor = tootDict[fullContext[i].id];
+		let toot = baseToot;
 		while (true) {
-			newChain.push(cursor.id);
-			if (!cursor.in_reply_to_id) {
+			console.log(toot.id, !!toot);
+
+			newChain.push(toot.id);
+			if (!toot.in_reply_to_id) {
 				break;
 			}
 
-			cursor = tootDict[cursor.in_reply_to_id];
+			if (fullContext[toot.in_reply_to_id] === undefined) {
+				// fetch this toot and add it to the context
+				fullContext = { ...fullContext, ...(await fetchThreadPayload(host, toot.in_reply_to_id)) };
+			}
+			toot = fullContext[toot.in_reply_to_id];
 		}
 		chains.push(newChain);
 
 		if (newChain.length > longestChain) {
 			longestChain = newChain.length;
-			longestChainIndex = i;
+			longestChainIndex = chains.length - 1;
 		}
 	}
 
 	const tootChain: PostMetadata[] = [];
 	for (const id of chains[longestChainIndex].reverse()) {
-		tootChain.push(tootDict[id]);
+		tootChain.push(fullContext[id]);
 	}
-
+	console.log(tootChain);
 	return tootChain;
 }
