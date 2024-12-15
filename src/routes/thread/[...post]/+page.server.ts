@@ -18,7 +18,7 @@ export const load: Load = async ({ params, setHeaders }) => {
 };
 
 async function fetchThreadPayload(host: string, id: string) {
-	console.log("Fetching", id);
+	console.log("Fetching", host, id);
 	const window = new JSDOM("").window;
 	const purify = DOMPurify(window);
 
@@ -72,14 +72,7 @@ async function fetchThreadPayload(host: string, id: string) {
 	return fullContext;
 }
 
-async function fetchThread(posturl: string) {
-	const { host, pathname } = new URL(posturl);
-
-	let fullContext = await fetchThreadPayload(
-		host,
-		pathname.substring(pathname.lastIndexOf("/") + 1)
-	);
-
+async function getLongestChain(fullContext: Record<string, PostMetadata>, host: string) {
 	let longestChain = -1;
 	let longestChainIndex = -1;
 	const chains = [];
@@ -87,15 +80,13 @@ async function fetchThread(posturl: string) {
 		const newChain = [];
 		let toot = baseToot;
 		while (true) {
-			console.log(toot.id, !!toot);
-
 			newChain.push(toot.id);
 			if (!toot.in_reply_to_id) {
 				break;
 			}
 
 			if (fullContext[toot.in_reply_to_id] === undefined) {
-				// fetch this toot and add it to the context
+				console.log("Couldn't find", toot.in_reply_to_id);
 				fullContext = { ...fullContext, ...(await fetchThreadPayload(host, toot.in_reply_to_id)) };
 			}
 			toot = fullContext[toot.in_reply_to_id];
@@ -107,11 +98,47 @@ async function fetchThread(posturl: string) {
 			longestChainIndex = chains.length - 1;
 		}
 	}
+	console.log(`Longest chain: ${longestChainIndex}`);
+	return { longestChain: chains[longestChainIndex], newContext: fullContext };
+}
 
-	const tootChain: PostMetadata[] = [];
-	for (const id of chains[longestChainIndex].reverse()) {
-		tootChain.push(fullContext[id]);
+async function fetchThread(posturl: string) {
+	const { host, pathname } = new URL(posturl);
+	let postId = pathname.substring(pathname.lastIndexOf("/") + 1);
+	if (posturl.endsWith("/")) {
+		postId = pathname.substring(pathname.lastIndexOf("/") + 1, 0);
 	}
-	console.log(tootChain);
-	return tootChain;
+
+	let fullContext = await fetchThreadPayload(host, postId);
+	let { longestChain, newContext } = await getLongestChain(fullContext, host);
+	fullContext = newContext;
+	while (true) {
+		const tootChain: PostMetadata[] = [];
+		for (const id of longestChain.reverse()) {
+			tootChain.push(fullContext[id]);
+		}
+		// console.log(tootChain);
+		const lastToot = tootChain[tootChain.length - 1];
+		if (lastToot) {
+			const children = await fetchThreadPayload(host, lastToot.id);
+			fullContext = { ...fullContext, ...children };
+			const { longestChain: newLongestChain, newContext: newFullContext } = await getLongestChain(
+				fullContext,
+				host
+			);
+			fullContext = newFullContext;
+			console.log("New context:", Object.keys(fullContext).length);
+			if (newLongestChain.length > longestChain.length) {
+				console.log(`New longest chain: ${newLongestChain.length}`);
+				longestChain = newLongestChain;
+			} else {
+				break;
+			}
+		} else {
+			break;
+		}
+	}
+	console.log("Returning", longestChain);
+	const longestChainToots = longestChain.map((id) => fullContext[id]);
+	return longestChainToots;
 }
