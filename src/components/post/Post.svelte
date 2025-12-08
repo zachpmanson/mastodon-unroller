@@ -13,8 +13,8 @@
 </script>
 
 {#if tree[id]?.content}
-	<div class="ml-2 pl-1 pt-1 relative duration-100">
-		<div class="text-gray-400 text-xs" on:dblclick={() => (expanded = !expanded)}>
+	<div class="ml-3 pl-1 pt-1 relative duration-100">
+		<div class="text-gray-400 text-xs max-w-3xl" on:dblclick={() => (expanded = !expanded)}>
 			<span class="text-base hover:underline font-mono" on:click={() => (expanded = !expanded)}
 				>[{expanded ? "-" : "+"}]</span
 			>
@@ -23,7 +23,7 @@
 			<a class="font-bold text-gray-400" href={tree[id].url}>permalink</a>
 		</div>
 		{#if expanded}
-			<div class="pb-2">
+			<div class="pb-2 max-w-3xl">
 				{@html tree[id].content}
 				<div class="flex gap-2">
 					{#each tree[id].media_attachments as attachment}
