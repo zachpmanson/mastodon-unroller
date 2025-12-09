@@ -11,6 +11,6 @@
 	<title>Thread by {username}</title>
 </svelte:head>
 
-<div class="m-auto mb-8">
+<div class="m-auto mb-8 w-fit">
 	<Post tree={data.tree} id={Object.keys(data.tree)[0]} />
 </div>

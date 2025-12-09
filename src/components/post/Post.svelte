@@ -13,12 +13,12 @@
 </script>
 
 {#if tree[id]?.content}
-	<div class="ml-3 pl-1 pt-1 relative duration-100">
+	<div class="ml-2 pl-1 pt-1 relative duration-100">
 		<div class="text-gray-400 text-xs max-w-3xl" on:dblclick={() => (expanded = !expanded)}>
 			<span class="text-base hover:underline font-mono" on:click={() => (expanded = !expanded)}
 				>[{expanded ? "-" : "+"}]</span
 			>
-			<a class="text-blue-500 text-base" href={tree[id].author_url}>{username}</a>
+			<a class="text-blue-500 text-sm" href={tree[id].author_url}>{username}</a>
 			at {new Date(tree[id].created_at).toLocaleString()}
 			<a class="font-bold text-gray-400" href={tree[id].url}>permalink</a>
 		</div>
@@ -39,7 +39,7 @@
 					{/each}
 				</div>
 			</div>
-			<div class="border-solid border-l-2">
+			<div class="border-solid border-l-2 ml-4 pl-1">
 				{#each tree[id].children ?? [] as child}
 					<svelte:self {tree} id={child} />
 				{/each}
