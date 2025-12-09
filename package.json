@@ -14,7 +14,7 @@
 		"@fontsource/fira-mono": "^4.5.10",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@sveltejs/adapter-auto": "^2.1.1",
-		"@sveltejs/kit": "^1.30.4",
+		"@sveltejs/kit": "^2.49.2",
 		"@types/cookie": "^0.5.4",
 		"@types/dompurify": "^3.2.0",
 		"@types/jsdom": "^21.1.7",
@@ -39,6 +39,7 @@
 		"@sveltejs/adapter-node": "^5.4.0",
 		"@types/node": "^20.19.26",
 		"dompurify": "^3.3.1",
-		"jsdom": "^22.1.0"
+		"jsdom": "^22.1.0",
+		"kit@^2.4.0": "link:@@sveltejs/kit@^2.4.0"
 	}
 }
