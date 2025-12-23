@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" baseProfile="full" version="1.1" style="fill: none;" width="435px" height="435px">
+<svg xmlns="http://www.w3.org/2000/svg" baseProfile="full" version="1.1" style="fill: none;" width="525px" height="525px">
 
-  <path style="stroke-width: 60px; stroke-linecap: round; stroke-linejoin: round; stroke: rgb(255, 255, 255); fill: none;" d="M180,240 A60,60 0 0,1 240,180 A60,60 0 0,1 300,240 L300,240 A90,90 0 0,1 210,330 A105,105 0 0,1 105,225 L105,225 A120,120 0 0,1 225,105 A150,135 0 0,1 375,240 A165,165 0 0,1 210,405 A180,195 0 0,1 30,210 L30,210 A195,180 0 0,1 225,30 L225,30 L225,30 L225,30 "/>
-  <path style="stroke-width: 39px; stroke-linecap: round; stroke-linejoin: round; stroke: rgb(10, 10, 10); fill: none;" d="M180,240 A60,60 0 0,1 240,180 A60,60 0 0,1 300,240 L300,240 A90,90 0 0,1 210,330 A105,105 0 0,1 105,225 L105,225 A120,120 0 0,1 225,105 A150,135 0 0,1 375,240 A165,165 0 0,1 210,405 A180,195 0 0,1 30,210 L30,210 A195,180 0 0,1 225,30 L225,30 L225,30 L225,30 "/>
+  <g transform="translate(45, 45)">
+    <path style="stroke-width: 90px; stroke-linecap: round; stroke-linejoin: round; stroke: rgb(255, 255, 255); fill: none;" d="M180,240 A60,60 0 0,1 240,180 A60,60 0 0,1 300,240 L300,240 A90,90 0 0,1 210,330 A105,105 0 0,1 105,225 L105,225 A120,120 0 0,1 225,105 A150,135 0 0,1 375,240 A165,165 0 0,1 210,405 A180,195 0 0,1 30,210 L30,210 A195,180 0 0,1 225,30 L225,30 L225,30 L225,30 "/>
+    <path style="stroke-width: 39px; stroke-linecap: round; stroke-linejoin: round; stroke: rgb(10, 10, 10); fill: none;" d="M180,240 A60,60 0 0,1 240,180 A60,60 0 0,1 300,240 L300,240 A90,90 0 0,1 210,330 A105,105 0 0,1 105,225 L105,225 A120,120 0 0,1 225,105 A150,135 0 0,1 375,240 A165,165 0 0,1 210,405 A180,195 0 0,1 30,210 L30,210 A195,180 0 0,1 225,30 L225,30 L225,30 L225,30 "/>
+  </g>
 
 </svg>
