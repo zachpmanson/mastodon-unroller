@@ -8,7 +8,7 @@
 	<title>Thread by {username}</title>
 </svelte:head>
 
-<div class="max-w-xl m-auto mb-8">
+<div class="max-w-[80ch] m-auto mb-8">
 	<div class="my-2">
 		<a href={data.thread[0].author_url}>{username}</a>
 		at {new Date(data.thread[0].created_at).toLocaleString()}
